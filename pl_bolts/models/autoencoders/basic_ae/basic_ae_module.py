@@ -4,8 +4,8 @@ import torch
 from pytorch_lightning import LightningModule, Trainer
 from torch.nn import functional as F
 
-from pl_bolts.datamodules import (CIFAR10DataModule, ImagenetDataModule,
-                                  MNISTDataModule, STL10DataModule)
+from pl_bolts.datamodules import (
+    CIFAR10DataModule, ImagenetDataModule, MNISTDataModule, STL10DataModule)
 from pl_bolts.models.autoencoders.basic_ae.components import AEEncoder
 from pl_bolts.models.autoencoders.basic_vae.components import Decoder
 

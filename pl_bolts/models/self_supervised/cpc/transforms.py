@@ -1,4 +1,10 @@
-from torchvision import transforms
+try:
+    from torchvision import transforms
+except ImportError:  # pragma: no-cover
+    transforms = ...
+    raise ImportError('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
+                      ' install it with `pip install torchvision`.')
+
 
 from pl_bolts.transforms.self_supervised import RandomTranslateWithReflect, Patchify
 

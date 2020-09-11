@@ -3,7 +3,8 @@ from typing import Callable
 
 import numpy as np
 from sklearn.utils import shuffle
-from torchvision.datasets import CIFAR10
+
+from pl_bolts.datamodules import CIFAR10
 
 
 class SSLDatasetMixin(ABC):

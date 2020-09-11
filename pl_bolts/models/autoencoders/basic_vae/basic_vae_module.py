@@ -5,9 +5,8 @@ import torch
 from torch import distributions
 from torch.nn import functional as F
 
-from pl_bolts.datamodules import (CIFAR10DataModule,
-                                  ImagenetDataModule, MNISTDataModule,
-                                  STL10DataModule)
+from pl_bolts.datamodules import (
+    CIFAR10DataModule, ImagenetDataModule, MNISTDataModule, STL10DataModule)
 from pl_bolts.models.autoencoders.basic_vae.components import Decoder, Encoder
 from pl_bolts.utils import shaping
 from pl_bolts.utils.pretrained_weights import load_pretrained

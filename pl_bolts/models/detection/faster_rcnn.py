@@ -2,8 +2,14 @@ from argparse import ArgumentParser
 
 import pytorch_lightning as pl
 import torch
-from torchvision.models.detection import faster_rcnn, fasterrcnn_resnet50_fpn
-from torchvision.ops import box_iou
+try:
+    from torchvision.models import detection
+    from torchvision.ops import box_iou
+except ImportError:  # pragma: no-cover
+    detection = ...
+    box_iou = ...
+    raise ImportError('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
+                      ' install it with `pip install torchvision`.')
 
 from pl_bolts.datamodules import VOCDetectionDataModule
 
@@ -57,7 +63,7 @@ class FasterRCNN(pl.LightningModule):
         """
         super().__init__()
 
-        model = fasterrcnn_resnet50_fpn(
+        model = detection.fasterrcnn_resnet50_fpn(
             # num_classes=num_classes,
             pretrained=pretrained,
             pretrained_backbone=pretrained_backbone,
@@ -66,7 +72,7 @@ class FasterRCNN(pl.LightningModule):
 
         if replace_head:
             in_features = model.roi_heads.box_predictor.cls_score.in_features
-            head = faster_rcnn.FastRCNNPredictor(in_features, num_classes)
+            head = detection.faster_rcnn.FastRCNNPredictor(in_features, num_classes)
             model.roi_heads.box_predictor = head
         else:
             assert num_classes == 91, "replace_head must be true to change num_classes"
