@@ -11,7 +11,7 @@ except ImportError:
                       ' install it with `pip install torchvision`.')
 
 
-class AMDIMPretraining():
+class AMDIMPretraining:
     """"
     For pretraining we use the train transform for both train and val.
     """
@@ -72,7 +72,7 @@ class AMDIMPretraining():
         return datasets[datamodule](dataset_root=data_dir, split=split, **kwargs)
 
 
-class AMDIMPatchesPretraining():
+class AMDIMPatchesPretraining:
     """"
     For pretraining we use the train transform for both train and val.
     """
