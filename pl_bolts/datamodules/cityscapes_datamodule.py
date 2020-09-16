@@ -1,15 +1,18 @@
+from warnings import warn
+
 import torch
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, random_split
-from warnings import warn
-
 
 try:
     from torchvision import transforms as transform_lib
     from torchvision.datasets import Cityscapes
 except ImportError:
     warn('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install torchvision`.')
+         ' install it with `pip install torchvision`.')
+    _TORCHVISION_AVAILABLE = False
+else:
+    _TORCHVISION_AVAILABLE = True
 
 
 class CityscapesDataModule(LightningDataModule):
@@ -72,6 +75,12 @@ class CityscapesDataModule(LightningDataModule):
             batch_size: number of examples per training/eval step
         """
         super().__init__(*args, **kwargs)
+
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError(
+                'You want to use CityScapes dataset loaded from `torchvision` which is not installed yet.'
+            )
+
         self.dims = (3, 32, 32)
         self.DATASET = Cityscapes
         self.data_dir = data_dir

@@ -1,17 +1,21 @@
-import numpy as np
 from warnings import warn
+
+import numpy as np
 
 try:
     import torchvision.transforms as transforms
 except ImportError:
     warn('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install torchvision`.')
+         ' install it with `pip install torchvision`.')
+    _TORCHVISION_AVAILABLE = False
+else:
+    _TORCHVISION_AVAILABLE = True
 
 try:
     import cv2
 except ImportError:
     warn('You want to use `opencv-python` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install opencv-python`.')
+         ' install it with `pip install opencv-python`.')
 
 
 class SimCLRTrainDataTransform(object):
@@ -36,6 +40,9 @@ class SimCLRTrainDataTransform(object):
         (xi, xj) = transform(x)
     """
     def __init__(self, input_height, s=1):
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use `transforms` from `torchvision` which is not installed yet.')
+
         self.s = s
         self.input_height = input_height
         color_jitter = transforms.ColorJitter(0.8 * self.s, 0.8 * self.s, 0.8 * self.s, 0.2 * self.s)
@@ -73,6 +80,9 @@ class SimCLREvalDataTransform(object):
         (xi, xj) = transform(x)
     """
     def __init__(self, input_height, s=1):
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use `transforms` from `torchvision` which is not installed yet.')
+
         self.s = s
         self.input_height = input_height
         self.test_transform = transforms.Compose([
@@ -91,6 +101,9 @@ class SimCLREvalDataTransform(object):
 class GaussianBlur(object):
     # Implements Gaussian blur as described in the SimCLR paper
     def __init__(self, kernel_size, min=0.1, max=2.0):
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use `transforms` from `torchvision` which is not installed yet.')
+
         self.min = min
         self.max = max
         # kernel size is set to be 10% of the image height/width

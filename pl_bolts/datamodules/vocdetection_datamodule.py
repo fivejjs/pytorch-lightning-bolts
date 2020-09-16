@@ -1,15 +1,19 @@
+from warnings import warn
+
 import torch
 import torchvision.transforms as T
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader
-from warnings import warn
 
 try:
     from torchvision.datasets import VOCDetection
 
 except ImportError:
     warn('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install torchvision`.')
+         ' install it with `pip install torchvision`.')
+    _TORCHVISION_AVAILABLE = False
+else:
+    _TORCHVISION_AVAILABLE = True
 
 
 class Compose(object):
@@ -113,8 +117,11 @@ class VOCDetectionDataModule(LightningDataModule):
         """
         TODO(teddykoker) docstring
         """
-
         super().__init__(*args, **kwargs)
+
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use VOC dataset loaded from `torchvision` which is not installed yet.')
+
         self.year = year
         self.data_dir = data_dir
         self.num_workers = num_workers

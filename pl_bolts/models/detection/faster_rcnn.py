@@ -1,18 +1,15 @@
 from argparse import ArgumentParser
+from warnings import warn
 
 import pytorch_lightning as pl
 import torch
-
-
-from pl_bolts.datamodules import VOCDetectionDataModule
-from warnings import warn
 
 try:
     from torchvision.models.detection import faster_rcnn, fasterrcnn_resnet50_fpn
     from torchvision.ops import box_iou
 except ImportError:
     warn('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install torchvision`.')
+         ' install it with `pip install torchvision`.')
 
 
 def _evaluate_iou(target, pred):
@@ -131,6 +128,8 @@ class FasterRCNN(pl.LightningModule):
 
 
 def run_cli():
+    from pl_bolts.datamodules import VOCDetectionDataModule
+
     pl.seed_everything(42)
     parser = ArgumentParser()
     parser = pl.Trainer.add_argparse_args(parser)

@@ -1,15 +1,10 @@
-import os
 from argparse import ArgumentParser
 
 import pytorch_lightning as pl
 import torch
-
-import torch. nn as nn
+import torch.nn as nn
 from torch.nn import functional as F
 
-from pl_bolts.datamodules import (BinaryMNISTDataModule, CIFAR10DataModule,
-                                  ImagenetDataModule, MNISTDataModule,
-                                  STL10DataModule)
 from pl_bolts.models.autoencoders.components import resnet18_encoder, resnet18_decoder
 from pl_bolts.models.autoencoders.components import resnet50_encoder, resnet50_decoder
 
@@ -145,21 +140,15 @@ class AE(pl.LightningModule):
         parser.add_argument("--num_workers", type=int, default=8)
         parser.add_argument("--data_dir", type=str, default=".")
 
-        parser.add_argument("--gpus", type=int, default=1)
-        parser.add_argument("--max_epochs", type=int, default=200)
-        parser.add_argument("--max_steps", type=int, default=-1)
-        parser.add_argument("--fast_dev_run", action='store_true')
-
         return parser
 
 
 def cli_main(args=None):
-    from pl_bolts.callbacks import LatentDimInterpolator, TensorboardGenerativeModelImageSampler
-
-    # cli_main()
+    from pl_bolts.callbacks import TensorboardGenerativeModelImageSampler
+    from pl_bolts.datamodules import CIFAR10DataModule, ImagenetDataModule, STL10DataModule
 
     parser = ArgumentParser()
-    parser.add_argument("--dataset", default="cifar10", type=str, help="cifar10, stl10, imagenet")
+    parser.add_argument("--dataset", default="cifar10", type=str, choices=["cifar10", "stl10", "imagenet"])
     script_args, _ = parser.parse_known_args(args)
 
     if script_args.dataset == "cifar10":
@@ -172,6 +161,7 @@ def cli_main(args=None):
         raise ValueError(f"undefined dataset {script_args.dataset}")
 
     parser = AE.add_model_specific_args(parser)
+    parser = pl.Trainer.add_argparse_args(parser)
     args = parser.parse_args(args)
 
     dm = dm_cls.from_argparse_args(args)
@@ -184,6 +174,7 @@ def cli_main(args=None):
     callbacks = [TensorboardGenerativeModelImageSampler()]
 
     trainer = pl.Trainer.from_argparse_args(args)
+    trainer.callbacks += callbacks
     trainer.fit(model, dm)
     return dm, model, trainer
 

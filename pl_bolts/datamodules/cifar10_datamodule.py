@@ -1,15 +1,13 @@
 import os
 from typing import Optional, Sequence
+from warnings import warn
 
 import torch
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import DataLoader, random_split
 
-
 from pl_bolts.datamodules.cifar10_dataset import TrialCIFAR10
 from pl_bolts.transforms.dataset_normalizations import cifar10_normalization
-from warnings import warn
-
 
 try:
     from torchvision import transforms as transform_lib
@@ -17,7 +15,10 @@ try:
 
 except ImportError:
     warn('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install torchvision`.')
+         ' install it with `pip install torchvision`.')
+    _TORCHVISION_AVAILABLE = False
+else:
+    _TORCHVISION_AVAILABLE = True
 
 
 class CIFAR10DataModule(LightningDataModule):
@@ -81,6 +82,10 @@ class CIFAR10DataModule(LightningDataModule):
             batch_size: number of examples per training/eval step
         """
         super().__init__(*args, **kwargs)
+
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use CIFAR10 dataset loaded from `torchvision` which is not installed yet.')
+
         self.dims = (3, 32, 32)
         self.DATASET = CIFAR10
         self.val_split = val_split

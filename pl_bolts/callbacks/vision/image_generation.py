@@ -1,12 +1,13 @@
+from warnings import warn
+
 import torch
 from pytorch_lightning import Callback
-from warnings import warn
 
 try:
     import torchvision
 except ImportError:
     warn('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install torchvision`.')
+         ' install it with `pip install torchvision`.')
 
 
 class TensorboardGenerativeModelImageSampler(Callback):

@@ -1,23 +1,22 @@
 from argparse import ArgumentParser
+from warnings import warn
 
 import pytorch_lightning as pl
 from torch import nn
 from torch.nn import functional as F
 from torch.optim import Adam
-from warnings import warn
 
 try:
     from torchvision.models import densenet
 except ImportError:
     warn('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install torchvision`.')
+         ' install it with `pip install torchvision`.')
 
 from pl_bolts.callbacks.self_supervised import SSLOnlineEvaluator
-from pl_bolts.datamodules import CIFAR10DataModule, STL10DataModule, ImagenetDataModule
 from pl_bolts.losses.self_supervised_learning import nt_xent_loss
 from pl_bolts.models.self_supervised.evaluator import Flatten
 from pl_bolts.models.self_supervised.resnets import resnet50_bn
-from pl_bolts.models.self_supervised.simclr.simclr_transforms import SimCLREvalDataTransform, SimCLRTrainDataTransform
+from pl_bolts.models.self_supervised.simclr.transforms import SimCLREvalDataTransform, SimCLRTrainDataTransform
 from pl_bolts.optimizers.lars_scheduling import LARSWrapper
 from pl_bolts.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
 
@@ -221,6 +220,8 @@ class SimCLR(pl.LightningModule):
 
 
 def cli_main():
+    from pl_bolts.datamodules import CIFAR10DataModule, STL10DataModule, ImagenetDataModule
+
     parser = ArgumentParser()
 
     # trainer args

@@ -1,3 +1,4 @@
+from warnings import warn
 
 from pl_bolts.transforms.self_supervised import RandomTranslateWithReflect, Patchify
 
@@ -5,7 +6,10 @@ try:
     from torchvision import transforms
 except ImportError:
     warn('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install torchvision`.')
+         ' install it with `pip install torchvision`.')
+    _TORCHVISION_AVAILABLE = False
+else:
+    _TORCHVISION_AVAILABLE = True
 
 
 class CPCTrainTransformsCIFAR10:
@@ -39,6 +43,9 @@ class CPCTrainTransformsCIFAR10:
             train_loader = module.train_dataloader(batch_size=32, transforms=CPCTrainTransformsCIFAR10())
 
         """
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use `transforms` from `torchvision` which is not installed yet.')
+
         self.patch_size = patch_size
         self.overlap = overlap
         self.flip_lr = transforms.RandomHorizontalFlip(p=0.5)
@@ -92,6 +99,8 @@ class CPCEvalTransformsCIFAR10:
             train_loader = module.train_dataloader(batch_size=32, transforms=CPCEvalTransformsCIFAR10())
 
         """
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use `transforms` from `torchvision` which is not installed yet.')
 
         # flipping image along vertical axis
         self.patch_size = patch_size
@@ -144,6 +153,9 @@ class CPCTrainTransformsSTL10:
 
 
         """
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use `transforms` from `torchvision` which is not installed yet.')
+
         # flipping image along vertical axis
         self.patch_size = patch_size
         self.overlap = overlap
@@ -198,6 +210,9 @@ class CPCEvalTransformsSTL10:
             train_loader = module.train_dataloader(batch_size=32, transforms=CPCEvalTransformsSTL10())
 
         """
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use `transforms` from `torchvision` which is not installed yet.')
+
         # flipping image along vertical axis
         self.patch_size = patch_size
         self.overlap = overlap
@@ -243,6 +258,9 @@ class CPCTrainTransformsImageNet128:
             module = ImagenetDataModule(PATH)
             train_loader = module.train_dataloader(batch_size=32, transforms=CPCTrainTransformsImageNet128())
         """
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use `transforms` from `torchvision` which is not installed yet.')
+
         # image augmentation functions
         self.patch_size = patch_size
         self.overlap = overlap
@@ -297,6 +315,9 @@ class CPCEvalTransformsImageNet128:
             module = ImagenetDataModule(PATH)
             train_loader = module.train_dataloader(batch_size=32, transforms=CPCEvalTransformsImageNet128())
         """
+        if not _TORCHVISION_AVAILABLE:
+            raise ImportError('You want to use `transforms` from `torchvision` which is not installed yet.')
+
         # image augmentation functions
         self.patch_size = patch_size
         self.overlap = overlap

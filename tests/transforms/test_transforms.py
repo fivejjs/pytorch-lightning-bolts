@@ -1,13 +1,14 @@
+from warnings import warn
+
 import pytest
 import pytorch_lightning as pl
 import torch
-from warnings import warn
 
 try:
     from torchvision import transforms
 except ImportError:
     warn('You want to use `torchvision` which is not installed yet,'  # pragma: no-cover
-                      ' install it with `pip install torchvision`.')
+         ' install it with `pip install torchvision`.')
 
 from pl_bolts.models.self_supervised.amdim.transforms import (
     AMDIMEvalTransformsCIFAR10,
@@ -33,7 +34,7 @@ from pl_bolts.models.self_supervised.moco.transforms import (
     Moco2TrainImagenetTransforms,
     Moco2EvalImagenetTransforms
 )
-from pl_bolts.models.self_supervised.simclr.simclr_transforms import (
+from pl_bolts.models.self_supervised.simclr.transforms import (
     SimCLREvalDataTransform,
     SimCLRTrainDataTransform
 )
